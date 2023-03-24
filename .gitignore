@@ -1,0 +1,4 @@
+/data
+/grafana/*
+!/grafana/grafana.ini
+/snmp/snmp.yml

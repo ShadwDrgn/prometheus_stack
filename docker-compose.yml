@@ -1,0 +1,37 @@
+services:
+  snmp_exporter:
+    image: prom/snmp-exporter
+    volumes:
+      - /home/user/Docker/volumes/prometheus/snmp/snmp.yml:/etc/snmp_exporter/snmp.yml
+    user: 1000:1000
+    ports:
+      - 9116:9116
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+  downloader_exporter:
+    image: leishi1313/downloader-exporter
+    volumes:
+      - /home/user/Docker/volumes/prometheus/downloader_exporter/config.yml:/config/config.yml
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - /home/user/Docker/volumes/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /home/user/Docker/volumes/prometheus/data:/prometheus
+    user: 1000:1000
+  grafana:
+    image: grafana/grafana-oss:9.4.3
+    user: 1000:1000
+    ports:
+      - "3001:3001"
+    volumes:
+      - /home/user/Docker/volumes/prometheus/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - /home/user/Docker/volumes/prometheus/grafana/lib:/var/lib/grafana
+      - /home/user/Docker/volumes/prometheus/grafana/provisioning:/etc/grafana/provisioning
+      - /home/user/Docker/volumes/prometheus/grafana/dashboards:/etc/grafana/dashboards
+    depends_on:
+      - prometheus
